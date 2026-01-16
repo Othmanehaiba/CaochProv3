@@ -12,7 +12,7 @@ session_start();
 require_once __DIR__ . "/../config/Database.php";
 
 if (!isset($_SESSION['id_user']) || ($_SESSION['role'] ?? '') !== 'coach') {
-  header("Location: login.php");
+  header("Location: /login");
   exit;
 }
 
@@ -41,21 +41,21 @@ $valideCount = (int)$stmt->fetchColumn();
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Coach</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
 
 <header class="topbar">
   <div class="nav">
-    <a class="brand" href="dashboard.coach.php">
+    <a class="brand" href="/coach/disponibilite">
       <img alt="logo" width="24" height="24"
         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'><path d='M6 14c2.5-6 9.5-6 12 0' stroke='%2322c55e' stroke-width='2' stroke-linecap='round'/><path d='M7 7h10' stroke='%23e5e7eb' stroke-width='2' stroke-linecap='round'/></svg>">
       SportCoach <span class="badge">Coach</span>
     </a>
     <nav class="navlinks">
-      <a class="active" href="dashboard.coach.php">Dashboard</a>
-      <a href="profil.coach.php">Profil</a>
-      <a href="logout.php">Déconnexion</a>
+      <a class="active" href="/coach/disponibilite">Dashboard</a>
+      <a href="/view/profil.coach.php">Profil</a>
+      <a href="/logout">Déconnexion</a>
     </nav>
   </div>
 </header>
@@ -134,13 +134,13 @@ $valideCount = (int)$stmt->fetchColumn();
 
               <td>
                 <!-- ACCEPT -->
-                <form method="post" action="../app/actions/accept_request.php" style="display:inline;">
+                <form method="post" action="/coach/acceptReservation" style="display:inline;">
                   <input type="hidden" name="reservation_id" value="<?= $r['reservation_id'] ?>">
                   <button class="btn primary sm">Accept</button>
                 </form>
 
                 <!-- REJECT -->
-                <form method="post" action="../app/actions/reject_request.php" style="display:inline;">
+                <form method="post" action="/coach/refuseReservation" style="display:inline;">
                   <input type="hidden" name="reservation_id" value="<?= $r['reservation_id'] ?>">
                   <button class="btn danger sm">Reject</button>
                 </form>
@@ -165,7 +165,7 @@ $valideCount = (int)$stmt->fetchColumn();
     </p>
 
     <!-- action + method to connect in PHP -->
-    <form class="form" data-js="validate" action="#" method="post">
+    <form class="form" data-js="validate" action="/coach/addDisponibilite" method="post">
       <!-- You will set coach_id from session in PHP, no need to show it here -->
       <!-- <input type="hidden" name="coach_id" value="<?php echo $_SESSION['id']; ?>"> -->
 
@@ -233,6 +233,6 @@ $valideCount = (int)$stmt->fetchColumn();
   </div>
 </div>
 
-<script src="assets/js/app.js"></script>
+<script src="/assets/js/main.js"></script>
 </body>
 </html>

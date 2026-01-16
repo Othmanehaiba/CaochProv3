@@ -9,21 +9,21 @@ require_once __DIR__ . "/../app/Controllers/CoachController.php";
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coachs disponibles</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
 
 <header class="topbar">
   <div class="nav">
-    <a class="brand" href="coaches.php">
+    <a class="brand" href="/">
       <img alt="logo" width="24" height="24"
         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'><path d='M6 14c2.5-6 9.5-6 12 0' stroke='%2322c55e' stroke-width='2' stroke-linecap='round'/><path d='M7 7h10' stroke='%23e5e7eb' stroke-width='2' stroke-linecap='round'/></svg>">
       SportCoach <span class="badge">Coachs</span>
     </a>
     <nav class="navlinks">
-      <a class="active" href="coach.php">Coachs</a>
-      <a href="dashboard.sportif.php">Dashboard Sportif</a>
-      <a href="logout.php">Déconnexion</a>
+      <a class="active" href="/">Coachs</a>
+      <a href="/sportif">Dashboard Sportif</a>
+      <a href="/logout">Déconnexion</a>
     </nav>
   </div>
 </header>
@@ -85,11 +85,11 @@ require_once __DIR__ . "/../app/Controllers/CoachController.php";
             </p>
 
             <div class="coach-actions">
-              <a href="profil.coach.php?id=<?= (int)$c['id'] ?>" class="btn primary sm">
+              <a href="/reserve?coach_id=<?= (int)$c['id'] ?>" class="btn primary sm">
                 View
               </a>
 
-              <a href="book.php?coach_id=<?= (int)$c['id'] ?>" class="btn sm">
+              <a href="/reserve?coach_id=<?= (int)$c['id'] ?>" class="btn sm">
                 Book
               </a>
 
@@ -139,7 +139,7 @@ require_once __DIR__ . "/../app/Controllers/CoachController.php";
 
       <div id="slotsBox" class="empty">Loading...</div>
 
-      <form id="bookForm" action="../actions/book_seance.php" method="post" style="display:none;margin-top:12px">
+      <form id="bookForm" action="/reserve" method="post" style="display:none;margin-top:12px">
         <input type="hidden" name="seance_id" id="seance_id">
         <button class="btn primary" type="submit">Confirm booking</button>
       </form>
@@ -147,6 +147,6 @@ require_once __DIR__ . "/../app/Controllers/CoachController.php";
   </div>
 </div>
 
-<script src="assets/js/app.js"></script>
+<script src="/assets/js/main.js"></script>
 </body>
 </html>

@@ -8,22 +8,22 @@ error_reporting(E_ALL);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Connexion</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
 
 <header class="topbar">
   <div class="nav">
-    <a class="brand" href="coach.php">
+    <a class="brand" href="/">
       <img alt="logo" width="24" height="24"
         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'><path d='M6 14c2.5-6 9.5-6 12 0' stroke='%2322c55e' stroke-width='2' stroke-linecap='round'/><path d='M7 7h10' stroke='%23e5e7eb' stroke-width='2' stroke-linecap='round'/></svg>">
       SportCoach
       <span class="badge">MVP</span>
     </a>
     <nav class="navlinks">
-      <a href="/view/coaches.php">Coachs</a>
-      <a class="active" href="login.php">Connexion</a>
-      <a href="/view/register.php">Inscription</a>
+      <a href="/">Coachs</a>
+      <a class="active" href="/login">Connexion</a>
+      <a href="/signup">Inscription</a>
     </nav>
   </div>
 </header>
@@ -42,7 +42,7 @@ error_reporting(E_ALL);
       </div>
       <div class="card-b">
         <!-- action + method à brancher côté PHP -->
-        <form class="form" data-js="validate" action="../app/Controllers/AuthController.php" method="post">
+        <form class="form" data-js="validate" action="/login" method="post">
           <input type="hidden" name="action" value="login">
           <div class="field">
             <label class="label" for="email">Email</label>
@@ -109,6 +109,6 @@ error_reporting(E_ALL);
   </div>
 </div>
 
-<script src="assets/js/main.js"></script>
+<script src="/assets/js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,19 @@
+{
+    "name": "othmane/coachprov3",
+    "description": "MVC Coach platform",
+    "type": "project",
+    "require": {
+        "twig/twig": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Othmane\\Coachprov3\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Othmane Haiba",
+            "email": "othma4@gmail.com"
+        }
+    ]
+}

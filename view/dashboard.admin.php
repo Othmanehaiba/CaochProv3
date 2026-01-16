@@ -14,20 +14,20 @@ $users = $admin->afficherProfiles();
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Admin</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
 
 <header class="topbar">
   <div class="nav">
-    <a class="brand" href="dashboard.admin.php">
+    <a class="brand" href="/view/dashboard.admin.php">
       <img alt="logo" width="24" height="24"
         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'><path d='M6 14c2.5-6 9.5-6 12 0' stroke='%2322c55e' stroke-width='2' stroke-linecap='round'/><path d='M7 7h10' stroke='%23e5e7eb' stroke-width='2' stroke-linecap='round'/></svg>">
       SportCoach <span class="badge">Admin</span>
     </a>
     <nav class="navlinks">
-      <a class="active" href="dashboard.admin.php">Dashboard</a>
-      <a href="logout.php">Déconnexion</a>
+      <a class="active" href="/view/dashboard.admin.php">Dashboard</a>
+      <a href="/logout">Déconnexion</a>
     </nav>
   </div>
 </header>
@@ -93,7 +93,7 @@ $users = $admin->afficherProfiles();
             </td>
 
             <td>
-              <form action="../app/actions/delete_user.php" method="post" style="display:inline;">
+              <form action="/app/actions/delete_user.php" method="post" style="display:inline;">
                 <input type="hidden" name="user_id" value="<?= (int)$u['id'] ?>">
                 <button class="btn danger sm" type="submit" onclick="return confirm('Delete this user?');">
                   Delete
@@ -145,6 +145,6 @@ $users = $admin->afficherProfiles();
   </div>
 </div>
 
-<script src="assets/js/app.js"></script>
+<script src="/assets/js/main.js"></script>
 </body>
 </html>

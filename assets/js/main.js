@@ -113,27 +113,29 @@ document.addEventListener("click", (e) => {
   if(bd) closeModal(bd.id);
 });
 
-  const roleSelect = document.getElementById("role");
-  const coachFields = document.getElementById("coachFields");
+
+// Register page: show/hide coach fields safely
+const roleSelect = document.getElementById("role");
+const coachFields = document.getElementById("coachFields");
+
+if (roleSelect && coachFields) {
+  const exp = document.getElementById("experience");
+  const disc = document.getElementById("discipline");
+  const desc = document.getElementById("description");
+
+  function setRequired(el, val) {
+    if (el) el.required = val;
+  }
 
   function toggleCoachFields() {
-    if (roleSelect.value === "coach") {
-      coachFields.style.display = "block";
+    const isCoach = roleSelect.value === "coach";
+    coachFields.style.display = isCoach ? "block" : "none";
 
-      document.getElementById("experience").required = true;
-      document.getElementById("discipline").required = true;
-      document.getElementById("description").required = true;
-
-    } else {
-      coachFields.style.display = "none";
-
-      document.getElementById("experience").required = false;
-      document.getElementById("discipline").required = false;
-      document.getElementById("description").required = false;
-    }
+    setRequired(exp, isCoach);
+    setRequired(disc, isCoach);
+    setRequired(desc, isCoach);
   }
 
   toggleCoachFields();
-
   roleSelect.addEventListener("change", toggleCoachFields);
-
+}

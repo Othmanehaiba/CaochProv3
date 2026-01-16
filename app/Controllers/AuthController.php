@@ -8,94 +8,127 @@ require_once __DIR__ . "/../Models/Sportif.php";
 
 class AuthController {
 
-    public function register(){
-        if($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["submit"])){
+    public function register(): void
+    {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST" || !isset($_POST["submit"])) {
+            return;
+        }
 
-            $role = $_POST["role"];
+        $role = $_POST["role"] ?? "";
 
-            $repo = new UserRepository();
+        $repo = new UserRepository();
 
-            if($role === "coach"){
-                $coach = new Coach(
-                    $_POST["nom"],
-                    $_POST["prenom"],
-                    $_POST["email"],
-                    $_POST["password"],
-                    $_POST["discipline"],
-                    (int)$_POST["experience"],
-                    $_POST["description"]
-                );
+        if ($role === "coach") {
+            $coach = new Coach(
+                $_POST["nom"] ?? "",
+                $_POST["prenom"] ?? "",
+                $_POST["email"] ?? "",
+                $_POST["password"] ?? "",
+                $_POST["discipline"] ?? "",
+                (int)($_POST["experience"] ?? 0),
+                $_POST["description"] ?? ""
+            );
 
-                $repo->createCoach($coach);
-                header("Location: /view/login.php");
-                exit;
-            }
+            $repo->createCoach($coach);
+            header("Location: /login");
+            exit;
+        }
 
-            if($role === "sportif"){
-                $sportif = new Sportif(
-                    $_POST["nom"],
-                    $_POST["prenom"],
-                    $_POST["email"],
-                    $_POST["password"]
-                );
-                $repo->createSportif($sportif);
-                header("Location: /view/login.php");
-                exit;
-            }
+        if ($role === "sportif") {
+            $sportif = new Sportif(
+                $_POST["nom"] ?? "",
+                $_POST["prenom"] ?? "",
+                $_POST["email"] ?? "",
+                $_POST["password"] ?? ""
+            );
+            $repo->createSportif($sportif);
+            header("Location: /login");
+            exit;
         }
     }
+
+    public function signup(): void
+    {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            require __DIR__ . "/../../view/register.php";
+            return;
+        }
+
+        $this->register();
+    }
+
     public function login(): void
-{
-    // if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    //     header("Location: /view/login.php");
-    //     exit;
-    // }
+    {
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            require __DIR__ . "/../../view/login.php";
+            return;
+        }
 
-    $role = $_POST["role"] ;
-    $email = $_POST["email"] ;
-    $password = $_POST["password"] ;
+        $role = $_POST["role"] ?? "";
+        $email = $_POST["email"] ?? "";
+        $password = $_POST["password"] ?? "";
 
-    $repo = new UserRepository();
-    $user = $repo->checkLogin($email, $password, $role);
+        if ($role === "" || $email === "" || $password === "") {
+            header("Location: /login");
+            exit;
+        }
 
-    // if ($user) {
-    //     var_dump($user);
-    //     die("user notfo");
-       
-    // }
+        $repo = new UserRepository();
+        $user = $repo->checkLogin($email, $password, $role);
 
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+        if (!$user) {
+            header("Location: /login");
+            exit;
+        }
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $userId = (int)$user["id"];
+        $_SESSION["id"] = $userId;
+        $_SESSION["id_user"] = $userId;
+        $_SESSION["user_id"] = $userId;
+        $_SESSION["role"] = $user["role"];
+        $_SESSION["nom"] = $user["nom"];
+        $_SESSION["prenom"] = $user["prenom"];
+
+        if ($user["role"] === "coach") {
+            header("Location: /coach/disponibilite");
+            exit;
+        } elseif ($user["role"] === "sportif") {
+            header("Location: /sportif");
+            exit;
+        }
+
+        header("Location: /view/dashboard.admin.php");
+        exit;
     }
 
-    $_SESSION["id"] = (int)$user["id"];
-    $_SESSION["role"] = $user["role"];
-    $_SESSION["nom"] = $user["nom"];
-    $_SESSION["prenom"] = $user["prenom"];
+    public function logout(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-    if ($user["role"] === "coach") {
-    header("Location: ./view/dashboard.coach.php");
-    exit;
-} elseif ($user["role"] === "sportif") {
-    header("Location: /view/dashboard.sportif.php");
-    exit;
-} else {
-    header("Location: /view/dashboard.admin.php");
-    exit;
-}
+        session_unset();
+        session_destroy();
+
+        header("Location: /login");
+        exit;
+    }
 }
 
-}
-
+if (basename(__FILE__) === basename($_SERVER["SCRIPT_FILENAME"] ?? "")) {
     $controller = new AuthController();
-    
-    // var_dump($_POST);
-  
-    if ($_POST["action"] === 'login') {
-        $controller->login();
-    
-    } elseif ($_POST["action"] === 'register') {
-        $controller->register();
-        echo "jdjd";
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $action = $_POST["action"] ?? "";
+
+        if ($action === "login") {
+            $controller->login();
+        } elseif ($action === "register") {
+            $controller->register();
+        }
     }
-    
+}

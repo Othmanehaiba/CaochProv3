@@ -26,7 +26,7 @@ $seances = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
   <meta charset="UTF-8">
   <title>Book a session</title>
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
@@ -36,7 +36,7 @@ $seances = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <p>Aucune disponibilité pour ce coach.</p>
 <?php else: ?>
   <?php foreach ($seances as $s): ?>
-    <form method="post" action="../app/actions/book_seance.php" style="margin-bottom:10px;">
+    <form method="post" action="/reserve" style="margin-bottom:10px;">
       <input type="hidden" name="seance_id" value="<?= (int)$s['id'] ?>">
 
       <div class="card">
@@ -55,7 +55,7 @@ $seances = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <?php endforeach; ?>
 <?php endif; ?>
 
-<a href="coaches.php">← Back to coaches</a>
+<a href="/">← Back to coaches</a>
 
 </body>
 </html>

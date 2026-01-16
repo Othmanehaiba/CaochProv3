@@ -78,15 +78,7 @@ class UserRepository {
     }
 
     public function deleteById(int $userId): bool{
-    // If coachs table uses FK to users.id, delete child row first
-    // $stmt = $this->pdo->prepare("DELETE FROM coachs WHERE user_id = ?");
-    // $stmt->execute([$userId]);
-
-    // If sportifs table exists (optional), delete child row too
-    // $stmt = $this->pdo->prepare("DELETE FROM sportifs WHERE user_id = ?");
-    // $stmt->execute([$userId]);
-
-    // Finally delete from users
+    
     $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
     return $stmt->execute([$userId]);
 
