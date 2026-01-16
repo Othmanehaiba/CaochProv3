@@ -32,21 +32,21 @@ class ReservationRepository {
     public function getRequestsForCoach(int $coachId): array
 {
         $sql = "SELECT
-                  r.id AS reservation_id,
-                  u.nom,
-                  u.prenom,
-                  s.date_seance,
-                  s.heure
-                FROM reservations r
-                JOIN seances s ON s.id = r.seance_id
-                JOIN users u ON u.id = r.sportif_id
-                WHERE s.coach_id = ?
-                AND r.statut = 'pending'";
+                    r.id AS reservation_id,
+                    u.nom,
+                    u.prenom,
+                    d.date,
+                    d.heure_debut
+                FROM reservation r
+                JOIN disponibilite d ON d.id = r.id_disponibilite
+                JOIN users u ON u.id = r.id_client
+                WHERE r.id_coach = ?
+                  AND r.statut = 'en_attente'
+                ORDER BY d.date, d.heure_debut;";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$coachId]);
 
-        // ⬇️ THIS creates the array
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
     public function getReservationsForCoach(int $coachId): array{

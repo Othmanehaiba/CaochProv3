@@ -1,7 +1,11 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-session_start();
+
+if(session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . "/../config/Database.php";
 
 if (!isset($_GET['coach_id'])) {
@@ -12,10 +16,10 @@ $coachId = (int)$_GET['coach_id'];
 
 $pdo = Database::connect();
 
-$sql = "SELECT id, date_seance, heure, duree
-        FROM seances
-        WHERE coach_id = ? AND statut = 'disponible'
-        ORDER BY date_seance, heure";
+$sql = "SELECT id, id_coach, date, heure_debut, duree
+        FROM disponibilite
+        WHERE id_coach = ? --AND statut = 'en_attente'
+        ORDER BY date, heure_debut";
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$coachId]);
@@ -37,12 +41,13 @@ $seances = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php else: ?>
   <?php foreach ($seances as $s): ?>
     <form method="post" action="/reserve" style="margin-bottom:10px;">
-      <input type="hidden" name="seance_id" value="<?= (int)$s['id'] ?>">
+      <input type="hidden" name="disponibilite_id" value="<?= (int)$s['id'] ?>">
+      
 
       <div class="card">
-        <strong><?= htmlspecialchars($s['date_seance']) ?></strong>
+        <strong><?= htmlspecialchars($s['date']) ?></strong>
         -
-        <?= htmlspecialchars(substr($s['heure'], 0, 5)) ?>
+        <?= htmlspecialchars(substr($s['heure_debut'], 0, 5)) ?>
         (<?= (int)$s['duree'] ?> min)
 
         <br><br>
@@ -55,7 +60,7 @@ $seances = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <?php endforeach; ?>
 <?php endif; ?>
 
-<a href="/">← Back to coaches</a>
+<a href="/coach">← Back to coaches</a>
 
 </body>
 </html>

@@ -46,8 +46,7 @@ class CoachController {
 
     public function addDisponibilite(): void
     {
-        http_response_code(501);
-        echo "Not implemented.";
+        require_once __DIR__ . "/../actions/add_disponibilite.php";
     }
 
     public function deleteDisponibilite(): void

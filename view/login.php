@@ -21,7 +21,7 @@ error_reporting(E_ALL);
       <span class="badge">MVP</span>
     </a>
     <nav class="navlinks">
-      <a href="/">Coachs</a>
+      <!-- <a href="/coach">Coachs</a> -->
       <a class="active" href="/login">Connexion</a>
       <a href="/signup">Inscription</a>
     </nav>
@@ -54,16 +54,6 @@ error_reporting(E_ALL);
             <input class="input" id="password" name="password" type="password" required data-validate="password" placeholder="8+ caractères" />
           </div>
 
-          <div class="field">
-            <label class="label" for="role">Rôle</label>
-            <select class="select" id="role" name="role" required>
-              <option value="">Choisir...</option>
-              <option value="sportif">Sportif</option>
-              <option value="coach">Coach</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-
           <button class="btn primary" name="submit" type="submit">
             <img alt="" width="18" height="18"
               src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none'><path d='M6 9h9' stroke='%23e5e7eb' stroke-width='2' stroke-linecap='round'/><path d='M11 5l4 4-4 4' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><path d='M3 3v12' stroke='%231f2937' stroke-width='2' stroke-linecap='round'/></svg>">
@@ -83,7 +73,7 @@ error_reporting(E_ALL);
           Validation JS basique. Le contrôle final (sécurité) se fait côté serveur.
         </p>
         <div class="hr"></div>
-        <a class="btn" href="register.php">Créer un compte</a>
+        <a class="btn" href="/signup">Créer un compte</a>
       </div>
     </aside>
   </div>

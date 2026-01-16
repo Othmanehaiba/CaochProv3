@@ -3,10 +3,7 @@ require_once __DIR__ . '/../../config/Database.php';
 
 class ReservationController
 {
-    /**
-     * GET  /reserve?coach_id=123  -> show available sessions (view/book.php)
-     * POST /reserve              -> reserve a seance (from book.php)
-     */
+    
     public function reserve(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -20,55 +17,79 @@ class ReservationController
         }
 
         // Basic security: only sportif
-        if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'sportif') {
-            header('Location: /login');
-            exit;
-        }
+        // if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'sportif') {
+        //     header('Location: /login');
+        //     exit;
+        // }
 
         $sportifId = (int)$_SESSION['user_id'];
-        $seanceId  = (int)($_POST['seance_id'] ?? 0);
+        $dispoId  = (int)($_POST['disponibilite_id']);
 
-        if ($seanceId <= 0) {
+        if ($dispoId <= 0) {
             header('Location: /');
             exit;
         }
 
         $pdo = Database::connect();
 
-        try {
-            $pdo->beginTransaction();
+        // try {
+        //     $pdo->beginTransaction();
 
-            // Lock the seance row (avoid double booking)
-            $stmt = $pdo->prepare('SELECT statut FROM seances WHERE id = ? FOR UPDATE');
-            $stmt->execute([$seanceId]);
-            $seance = $stmt->fetch(PDO::FETCH_ASSOC);
+            $stmt = $pdo->prepare("
+            SELECT id, id_coach, date, heure_debut, duree, statut
+            FROM disponibilite
+            WHERE id = ?
+            FOR UPDATE
+        ");
+        $stmt->execute([$dispoId]);
+        $dispo = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (!$seance || $seance['statut'] !== 'disponible') {
-                $pdo->rollBack();
-                header('Location: /');
-                exit;
-            }
+            // if (!$dispo || $dispo['statut'] !== 'disponible') {
+            //     $pdo->rollBack();
+            //     header('Location: /');
+            //     exit;
+            // }
 
-            // Insert reservation (pending by default)
-            $stmt = $pdo->prepare("INSERT INTO reservations (seance_id, sportif_id, statut, reserved_at) VALUES (?, ?, 'pending', NOW())");
-            $stmt->execute([$seanceId, $sportifId]);
+            $coachId = (int)$dispo['id_coach'];
 
-            // Mark seance as reserved
-            $stmt = $pdo->prepare("UPDATE seances SET statut = 'reservee' WHERE id = ?");
-            $stmt->execute([$seanceId]);
+        $start = new DateTimeImmutable($dispo['date'] . ' ' . $dispo['heure_debut']);
+        $end  = $start->modify('+' . (int)$dispo['duree'] . ' minutes');
+        $heureFin = $end->format('H:i:s');
 
-            $pdo->commit();
+            $stmt = $pdo->prepare("
+            INSERT INTO reservation
+              (id_client, id_coach, id_disponibilite, date, heure_debut, heure_fin, objectif, statut)
+            VALUES
+              (?, ?, ?, ?, ?, ?, ?, 'en_attente')
+        ");
+        $stmt->execute([
+            $sportifId,
+            $coachId,
+            $dispoId,
+            $dispo['date'],
+            $dispo['heure_debut'],
+            $heureFin,
+            $_POST['objectif'] ?? null
+        ]);
+
+        $stmt = $pdo->prepare("UPDATE disponibilite SET statut = 'en_attente' WHERE id = ?");
+        $stmt->execute([$dispoId]);
+
+            
+
+            // $pdo->commit();
 
             header('Location: /sportif');
             exit;
 
-        } catch (Exception $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
-            header('Location: /');
-            exit;
-        }
+        // } catch (Exception $e) {
+        //     if ($pdo->inTransaction()) {
+        //         $pdo->rollBack();
+        //     }
+        //     die("NOKKK");
+        //     header('Location: /');
+        //     exit;
+        // }
     }
 
     /**

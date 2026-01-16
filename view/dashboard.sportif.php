@@ -16,7 +16,7 @@
       SportCoach <span class="badge">Sportif</span>
     </a>
     <nav class="navlinks">
-      <a href="/">Coachs</a>
+      <a href="/coach">Coachs</a>
       <a class="active" href="/sportif">Dashboard</a>
       <a href="/sportif/details">Profil</a>
       <a href="/logout">Déconnexion</a>
@@ -31,7 +31,7 @@
       <p class="h-sub">Mes séances + statistiques (données via PHP).</p>
     </div>
     <div class="actions">
-      <a class="btn primary" href="/">Réserver une séance</a>
+      <a class="btn primary" href="/coach">Réserver une séance</a>
     </div>
   </div>
 
@@ -87,7 +87,9 @@
           </thead>
           <tbody>
             <?php
-            session_start();
+            if(session_status() === PHP_SESSION_NONE){
+                session_start();
+            }
             require_once __DIR__ . "/../app/Controllers/SportifController.php";
             
             $sportifId = (int)($_SESSION['user_id'] ?? 0);

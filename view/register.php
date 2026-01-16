@@ -20,7 +20,7 @@ error_reporting(E_ALL);
       SportCoach <span class="badge">MVP</span>
     </a>
     <nav class="navlinks">
-      <a href="/">Coachs</a>
+      <!-- <a href="/">Coachs</a> -->
       <a href="/login">Connexion</a>
       <a class="active" href="/signup">Inscription</a>
     </nav>

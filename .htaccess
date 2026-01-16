@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# If the requested path is a real file or folder, serve it normally
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Otherwise, send everything to index.php (front controller)
+RewriteRule ^ index.php [L]

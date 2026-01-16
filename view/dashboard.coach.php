@@ -1,38 +1,42 @@
 <?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-session_start();
+
 require_once __DIR__ . "/../config/Database.php";
 require_once __DIR__ . "/../app/Repositories/ReservationRepository.php";
-$request = new ReservationRepository();
-$requests = $request->getRequestsForCoach($_SESSION["id"]);
-
-
-session_start();
 require_once __DIR__ . "/../config/Database.php";
 
-if (!isset($_SESSION['id_user']) || ($_SESSION['role'] ?? '') !== 'coach') {
-  header("Location: /login");
-  exit;
+if(session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-$coachId = (int)$_SESSION['id_user'];
+$request = new ReservationRepository();
+$requests = $request->getRequestsForCoach($_SESSION["user_id"]);
+
+
+
+// if (!isset($_SESSION['id_user']) || ($_SESSION['role'] ?? '') !== 'coach') {
+//   header("Location: /login");
+//   exit;
+// }
+
+$coachId = (int)$_SESSION['user_id'];
 $pdo = Database::connect();
 
 $today = date('Y-m-d');
 $tomorrow = date('Y-m-d', strtotime('+1 day'));
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM reservations WHERE coach_id = ? AND statut = 'pending'");
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM reservation WHERE id_coach = ? AND statut = 'en_attente'");
 $stmt->execute([$coachId]);
 $pendingCount = (int)$stmt->fetchColumn();
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM seances WHERE coach_id = ? AND statut = 'reservee' AND date_seance = ?");
-$stmt->execute([$coachId, $today]);
-$todayCount = (int)$stmt->fetchColumn();
+// $stmt = $pdo->prepare("SELECT COUNT(*) FROM seances WHERE coach_id = ? AND statut = 'reservee' AND date_seance = ?");
+// $stmt->execute([$coachId, $today]);
+// $todayCount = (int)$stmt->fetchColumn();
 
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM seances WHERE coach_id = ? AND statut = 'reservee'");
-$stmt->execute([$coachId]);
-$valideCount = (int)$stmt->fetchColumn();
+// $stmt = $pdo->prepare("SELECT COUNT(*) FROM seances WHERE coach_id = ? AND statut = 'reservee'");
+// $stmt->execute([$coachId]);
+// $valideCount = (int)$stmt->fetchColumn();
 
 ?>
 <!DOCTYPE html>
@@ -54,7 +58,7 @@ $valideCount = (int)$stmt->fetchColumn();
     </a>
     <nav class="navlinks">
       <a class="active" href="/coach/disponibilite">Dashboard</a>
-      <a href="/view/profil.coach.php">Profil</a>
+      <!-- <a href="/view/profil.coach.php">Profil</a> -->
       <a href="/logout">Déconnexion</a>
     </nav>
   </div>
@@ -82,7 +86,7 @@ $valideCount = (int)$stmt->fetchColumn();
           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none'><path d='M3 10h14' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round'/><circle cx='6' cy='10' r='2' stroke='%23e5e7eb' stroke-width='2'/></svg>">
       </div>
       <div>
-        <div class="kpi-val"><?= $pendingCount ?></div>
+        <!-- <div class="kpi-val"><?= $pendingCount ?></div> -->
         <div class="kpi-lab">Demandes en attente</div>
       </div>
     </div>
@@ -92,7 +96,7 @@ $valideCount = (int)$stmt->fetchColumn();
           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none'><path d='M4 11l3 3 9-9' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>">
       </div>
       <div>
-        <div class="kpi-val"><?= $todayCount ?></div>
+        <!-- <div class="kpi-val"><?= $todayCount ?></div> -->
         <div class="kpi-lab">Validées aujourd’hui</div>
       </div>
     </div>
@@ -102,7 +106,7 @@ $valideCount = (int)$stmt->fetchColumn();
           src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none'><path d='M10 2v6l4 2' stroke='%23e5e7eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><circle cx='10' cy='10' r='8' stroke='%2322c55e' stroke-width='2'/></svg>">
       </div>
       <div>
-        <div class="kpi-val"><?= $valideCount ?></div>
+        <!-- <div class="kpi-val"><?= $valideCount ?></div> -->
         <div class="kpi-lab">Validées</div>
       </div>
     </div>
@@ -129,8 +133,8 @@ $valideCount = (int)$stmt->fetchColumn();
             <?php foreach ($requests as $r): ?>                           
             <tr>                                                          
               <td><?= htmlspecialchars($r['prenom'].' '.$r['nom']) ?></td>
-              <td><?= $r['date_seance'] ?></td>
-              <td><?= substr($r['heure'],0,5) ?></td>
+              <td><?= $r['date'] ?></td>
+              <td><?= substr($r['heure_debut'],0,5) ?></td>
 
               <td>
                 <!-- ACCEPT -->
@@ -181,7 +185,7 @@ $valideCount = (int)$stmt->fetchColumn();
 
       <div class="field">
         <label class="label" for="duree">Durée (minutes)</label>
-        <input class="input" id="duree" name="duree" type="number" min="15" step="15" required placeholder="ex: 60" />
+        <input class="input" id="duree" name="duree" type="number"  required placeholder="ex: 60" />
       </div>
 
       <div class="field">

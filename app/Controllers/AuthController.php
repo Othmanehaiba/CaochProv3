@@ -59,22 +59,23 @@ class AuthController {
 
     public function login(): void
     {
+
+        // die("OKK");
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
             require __DIR__ . "/../../view/login.php";
             return;
         }
 
-        $role = $_POST["role"] ?? "";
         $email = $_POST["email"] ?? "";
         $password = $_POST["password"] ?? "";
 
-        if ($role === "" || $email === "" || $password === "") {
+        if ($email === "" || $password === "") {
             header("Location: /login");
             exit;
         }
 
         $repo = new UserRepository();
-        $user = $repo->checkLogin($email, $password, $role);
+        $user = $repo->checkLogin($email, $password);
 
         if (!$user) {
             header("Location: /login");
@@ -86,8 +87,8 @@ class AuthController {
         }
 
         $userId = (int)$user["id"];
-        $_SESSION["id"] = $userId;
-        $_SESSION["id_user"] = $userId;
+        // $_SESSION["id"] = $userId;
+        // $_SESSION["id_user"] = $userId;
         $_SESSION["user_id"] = $userId;
         $_SESSION["role"] = $user["role"];
         $_SESSION["nom"] = $user["nom"];

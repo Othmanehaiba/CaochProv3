@@ -52,11 +52,10 @@ class UserRepository {
         ]);
     }
 
-    public function checkLogin(string $email, string $password, string $role): array
-{
-    $sql = "SELECT * FROM users WHERE email = ? AND role = ? AND pass = ? LIMIT 1";
+    public function checkLogin(string $email, string $password){
+    $sql = "SELECT * FROM users WHERE email = ? AND pass = ? LIMIT 1";
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([$email, $role, $password]);
+    $stmt->execute([$email, $password]);
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     return $user ?: null;
